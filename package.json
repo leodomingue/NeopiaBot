@@ -1,0 +1,23 @@
+{
+  "name": "neopiabot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leodomingue/NeopiaBot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leodomingue/NeopiaBot/issues"
+  },
+  "homepage": "https://github.com/leodomingue/NeopiaBot#readme",
+  "dependencies": {
+    "discord.js": "^14.17.3"
+  }
+}
