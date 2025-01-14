@@ -1,5 +1,5 @@
 // bot/index.js
-const { Client, GatewayIntentBits, Events } = require("discord.js"); // Importación correcta
+const { Client, GatewayIntentBits, Events, MessageActivityType } = require("discord.js"); // Importación correcta
 
 // Crear cliente de discord y permisos
 const client = new Client({ 
@@ -18,9 +18,19 @@ client.once(Events.ClientReady, readyClient => {
 
 //Crear mensaje
 client.on('messageCreate', (message) => {
-    if (message.content === 'hola') {
-      message.channel.send('¡Hola! Soy NeopiaBot');
-    }
+
+  if(message.author.bot) return; //Si el mensaje es de un bot no lo lee
+  if(!message.content.startsWith('!')) return; //Si el mensaje no comienza con ! no lo lee
+
+  const args = message.content.slice(1) //eliminamos el !
+
+  try{
+    const command = require(`./commands/${args}.js`);
+    command.run(message)
+
+  }catch(error){
+    console.log(`Error al usar el codigo: ${args} `, error.message)
+  }
 });
 
 
