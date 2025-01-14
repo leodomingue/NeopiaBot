@@ -1,5 +1,5 @@
 // bot/index.js
-const { Client, GatewayIntentBits, Events, MessageActivityType } = require("discord.js"); // Importación correcta
+const { Client, GatewayIntentBits, Events, MessageActivityType, EmbedBuilder } = require("discord.js"); // Importación correcta
 
 // Crear cliente de discord y permisos
 const client = new Client({ 
@@ -22,11 +22,12 @@ client.on('messageCreate', (message) => {
   if(message.author.bot) return; //Si el mensaje es de un bot no lo lee
   if(!message.content.startsWith('!')) return; //Si el mensaje no comienza con ! no lo lee
 
-  const args = message.content.slice(1) //eliminamos el !
+  const args = message.content.slice(1).split(' '); //eliminamos el ! y divide la cadena
+  const commandName = args.shift(); // Obtenemos el primer elemento de la cadena
 
   try{
-    const command = require(`./commands/${args}.js`);
-    command.run(message)
+    const command = require(`./commands/${commandName}.js`);
+    command.run(message, args)
 
   }catch(error){
     console.log(`Error al usar el codigo: ${args} `, error.message)
