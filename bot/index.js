@@ -1,5 +1,5 @@
 // bot/index.js
-const { Client, GatewayIntentBits, Events, MessageActivityType, EmbedBuilder } = require("discord.js"); // Importación correcta
+const { Client, GatewayIntentBits, Events, MessageActivityType, EmbedBuilder } = require("discord.js");
 
 // Crear cliente de discord y permisos
 const client = new Client({ 
@@ -7,6 +7,7 @@ const client = new Client({
       GatewayIntentBits.Guilds,          // Para eventos de servidor
       GatewayIntentBits.GuildMessages,  // Para escuchar mensajes en los canales
       GatewayIntentBits.MessageContent  // Para acceder al contenido de los mensajes
+      
   ]
 });
 
@@ -35,5 +36,4 @@ client.on('messageCreate', (message) => {
 });
 
 
-// Log in to Discord with your client's token
 client.login("MTMyODUyMTMxOTUxMTQ5MDcyMw.GrI9gT.CtCOYh9OZCAT0_n5kd2VbbTLTCK9AHxyeiK2U4");
