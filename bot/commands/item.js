@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const axios = require("axios");
 const cheerio = require("cheerio");
+const jellyneo = require(`../../api/jellyneo.js`);
 const fs = require("fs");
 
 module.exports = {
@@ -25,7 +26,7 @@ module.exports = {
         }
 
 
-        const data = await scrapeData(item);
+        const data = await jellyneo.itemDataByID(item);//await scrapeJellyNeoDataByItemID(item);
         console.log("Item ID recibido:", item);
 
         if (!data) {
@@ -49,40 +50,3 @@ module.exports = {
     }
 };
 
-async function scrapeData(item) {
-    try {
-        //CODIGO ORIGINAL https://github.com/leodomingue/Scraaping-Neopets.git
-        const url = `https://items.jellyneo.net/item/${item}/`;
-        const { data } = await axios.get(url);
-        const $ = cheerio.load(data);
-
-        // Se encuentra toda la informacion
-        const principalTargetDiv = $('div.row .large-9.small-12.columns.content-wrapper');
-        if (!principalTargetDiv) return null;
-
-
-        const title = principalTargetDiv.find('h1').text().trim();
-
-        const firstSecondaryTargetDiv =  principalTargetDiv.find('div.large-3.push-2.small-12.columns');
-        const imgSrc = firstSecondaryTargetDiv.find('p.text-center img').attr('src');
-        const category = firstSecondaryTargetDiv.find('ul.small-block-grid-2.large-block-grid-1.no-padding li:nth-of-type(2)').find('a').text().trim();
-
-        const secondSecondaryTargetDiv = principalTargetDiv.find('div.large-7.push-2.small-12.columns');
-
-
-        const description = secondSecondaryTargetDiv.find("p").first().find('em').text().trim();
-
-        let price;
-
-        if (secondSecondaryTargetDiv.find("h3.entry-profile-header").text().split(' ')[0] === "DescriptionNeocash"){
-            price =secondSecondaryTargetDiv.find("div.row .small-4.columns.text-center p strong.nc-text").text().trim();
-        } else{
-            price = secondSecondaryTargetDiv.find('div.pricing-row-container .price-row').text().split(' ')[0] + " " + secondSecondaryTargetDiv.find('div.pricing-row-container .price-row').text().split(' ')[1]
-        }
-
-        return { title, imgSrc, category, description, price };
-    } catch (error) {
-        console.error("Error durante el scraping:", error.message);
-        return null;
-    }
-}
