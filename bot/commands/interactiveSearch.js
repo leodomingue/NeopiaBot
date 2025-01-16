@@ -1,7 +1,19 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder , ComponentType, MessageFlags} = require('discord.js');
+const jellyneo = require(`../../api/jellyneo.js`);
+
 module.exports = {
     description: "Realiza una busqueda interactiva dado un menu de imagenes",
     run: async(message) => {
+
+        let page = 0;
+
+        const images = ["https://i.imgur.com/3swK9kH.png","https://i.imgur.com/kjOgn8d.png"]
+
+        const embed = new EmbedBuilder()
+                .setTitle(`Imagen ${page + 1}`)
+                .setImage(images[page])
+                .setColor(0x00AE86)
+                .setFooter({ text: `Página ${page + 1} de ${images.length}` });
 
         //Creamos los botones
         const button_1 = new ButtonBuilder().setCustomId('1').setLabel('1').setStyle(ButtonStyle.Secondary);
@@ -32,7 +44,7 @@ module.exports = {
 
         //Mostramos el mensaje con los botnes y el contenido
         await message.channel.send({
-            content: 'Botones:',
+            embeds: [embed],
             components: [row_1, row_2, row_3, row_4],
         });
 
@@ -46,7 +58,49 @@ module.exports = {
             try {
                 // Validamos que el usuario que interactuó sea el mismo que ejecutó el comando
                 if (i.user.id === message.author.id) {
-                    await i.reply({ content: `Clickeaste en el botón ${i.customId}`, ephemeral: true });
+                    //Si toca los las flechas, cambiamos de pagina y de foto
+                    if (i.customId === 'right' || i.customId === 'left' ){
+                        if(i.customId === 'right'){
+                            if(page < 7500){
+                                page++;
+                            }
+                        } else{
+                            if (page > 0){
+                                page--;
+                            }
+                        }
+
+                        //Y actualizamos la foto
+                        const updatedEmbed = new EmbedBuilder()
+                            .setTitle(`Imagen ${page + 1}`)
+                            .setImage(images[page])
+                            .setColor(0x0099FF)
+                            .setFooter({ text: `Página ${page + 1} de ${images.length}` });
+
+                        await i.update({
+                            embeds: [updatedEmbed]
+                        });
+
+
+                    }else{
+                        //Si toca algun numero, vemos el ID correspondiente y llamamos a la funcion de scrapeo
+                        const ID = Number(i.customId) + Number(page*9);
+                        const data = await jellyneo.itemDataByID(ID)
+                        const embed = new EmbedBuilder()
+                                    .setColor(0x0099FF)
+                                    .setTitle(data.title || " ")
+                                    .setDescription(data.description || " ")
+                                    .addFields(
+                                        { name: 'Categoría', value: data.category || "No disponible", inline: true },
+                                        { name: 'Precio', value: data.price || "No disponible", inline: true },
+                                    )
+                                    .setImage(data.imgSrc || " ")
+                                    .setFooter({ text: `https://items.jellyneo.net/item/${ID}/` })
+
+                        await message.channel.send({ embeds: [embed] })
+                    }
+                    await i.deferUpdate();
+
                 } else {
                     await i.reply({ content: `No deberías interactuar con estos botones ${i.user.id}. No sos ${message.author.id}`, ephemeral: true });
                 }
@@ -61,3 +115,6 @@ module.exports = {
         });
     }
 };
+
+//Falta cambiar el tema de las imagenes (Se debe crear una funcion que llame a una API donde estrán alojadas las imagenes)
+//Se debe solucionar el problema relacionado con await i.deferUpdate();
