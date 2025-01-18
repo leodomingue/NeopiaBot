@@ -51,7 +51,7 @@ module.exports = {
         // Creamos el colector de interacciones en el mismo canal de texto donde se escribio el mensaje
         const collector = message.channel.createMessageComponentCollector({
             componentType: ComponentType.Button, //La interaccion
-            time: 15_000, //Tiempo de respuesta
+            time: 90_000, //Tiempo de respuesta
         });
 
         collector.on('collect', async (i) => { //Vemos la interrracion i
@@ -73,7 +73,7 @@ module.exports = {
                         //Y actualizamos la foto
                         const updatedEmbed = new EmbedBuilder()
                             .setTitle(`Imagen ${page + 1}`)
-                            .setImage(images[page])
+                            .setImage(`https://neopetsimages.s3.sa-east-1.amazonaws.com/neopets_images/grid_result${page}.png`)
                             .setColor(0x0099FF)
                             .setFooter({ text: `Página ${page + 1} de ${images.length}` });
 
