@@ -44,24 +44,23 @@ module.exports = {
             message.reply(`No se a encontrado ningun resultado`);
             return;
         }
-        //message.reply(`Se encontraron ${data.resultCount} item/s`);
 
-        var embedResults = []
+        const totalPages = Math.ceil(data.resultCount / queryArg.limit);
+        let currentPage = 1;
+
+        const embed = new EmbedBuilder()
+        .setColor(0x0099FF)
+        .setTitle(`Neopets Items: ${data.resultCount} - Page ${currentPage} of ${totalPages}`);
 
         data.queryResult.forEach(item => {
-            const embed = new EmbedBuilder()
-            .setColor(0x0099FF)
-            .setTitle(item.itemName || " ")
-            .addFields(
-                { name: 'Rarity', value: item.itemRarity || "No disponible", inline: true },
-                { name: 'Precio', value: item.itemPrice || "No disponible", inline: true },
+            embed.addFields(
+                { name: '\u200B', value: `**${item.itemName || "Nombre no Disponible"}**` },
+                { name: 'Rarity', value: item.itemRarity || "No disponible", inline: true},
+                { name: 'Precio', value: item.itemPrice || "No disponible", inline: true},
+                { name: 'Link', value: item.itemLink || "No disponible"},
             )
-            .setImage(item.itemImg || " ")
-            .setFooter({ text: item.itemLink })
-            
-            embedResults.push(embed)
         });
-
+                
         const button_center= new ButtonBuilder().setCustomId('0').setLabel('-').setStyle(ButtonStyle.Danger).setDisabled(true);
         const button_left= new ButtonBuilder().setCustomId('left').setLabel('⬅️').setStyle(ButtonStyle.Success);
         const button_right = new ButtonBuilder().setCustomId('right').setLabel('➡️').setStyle(ButtonStyle.Success);
@@ -69,7 +68,7 @@ module.exports = {
         const button_row = new ActionRowBuilder().addComponents(button_left, button_center, button_right);
 
         message.channel.send({ 
-            embeds: embedResults, 
+            embeds: [embed], 
             components: [button_row],
         });
 
@@ -80,44 +79,50 @@ module.exports = {
 
         collector.on('collect',  async(i) => {
             try {
+                
                 console.log('Interaccion')
-                //i.deferUpdate();
+                //await i.deferUpdate()
+                
                 if (i.user.id !== message.author.id) {
                     i.reply({ content: `These buttons aren't for you!`, flags: MessageFlags.Ephemeral });
                     return;
                 }
                     
                 if(i.customId === 'right'){
-                    queryArg.start += 5;
+                    currentPage++;
+                    queryArg.start += queryArg.limit;
                 }
-
-                if(i.customId === 'left'){
-                    queryArg.start -= 5;
+                else if(i.customId === 'left'){
+                    currentPage--;
+                    queryArg.start -= queryArg.limit;
                 }
                 
                 data = await jellyneo.itemSearchQuery(queryArg);
                 
-                var updatedEmbedResults = []
+                const embed = new EmbedBuilder()
+                .setColor(0x0099FF)
+                .setTitle(`Neopets Items - Page ${currentPage} of ${totalPages}`);
+
                 data.queryResult.forEach(item => {
-                    const embed = new EmbedBuilder()
-                    .setColor(0x0099FF)
-                    .setTitle(item.itemName || " ")
-                    .addFields(
-                        { name: 'Rarity', value: item.itemRarity || "No disponible", inline: true },
-                        { name: 'Precio', value: item.itemPrice || "No disponible", inline: true },
+                    embed.addFields(
+                        { name: '\u200B', value: `**${item.itemName || "Nombre no Disponible"}**` },
+                        { name: 'Rarity', value: item.itemRarity || "No disponible", inline: true},
+                        { name: 'Precio', value: item.itemPrice || "No disponible", inline: true},
+                        { name: 'Link', value: item.itemLink || "No disponible"},
                     )
-                    .setImage(item.itemImg || " ")
-                    .setFooter({ text: item.itemLink })
-                    
-                    updatedEmbedResults.push(embed)
                 });
 
-                //Y actualizamos la foto
+                button_left.setDisabled(currentPage === 1);
+                button_right.setDisabled(currentPage === totalPages);
+
+                await i.update({
+                    embeds: [embed],
+                    components: [button_row] 
+                });        
                 
-                i.update({
-                    embeds: [updatedEmbedResults],
-                    components: [button_row]
-                });               
+                //Reseteamos el tiempo
+                collector.resetTimer();
+
             } catch (error) {
                 console.error(error);
             }
