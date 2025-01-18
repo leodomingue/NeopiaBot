@@ -82,13 +82,16 @@ module.exports = {
                         await i.update({
                             embeds: [updatedEmbed]
                         });
+
+                        //Reseteamos el tiempo
                         collector.resetTimer();
 
                     }else{
+                        //Indicamos que se procesa la solicitud
                         await i.deferUpdate();
                         //Si toca algun numero, vemos el ID correspondiente y llamamos a la funcion de scrapeo
                         const ID = Number(i.customId) + Number(page*9);
-                        const real_ID = Number(jsonDataIDNeopets[String(ID)])
+                        const real_ID = Number(jsonDataIDNeopets[String(ID)]) //Buscamos el ID relacionado a la pagina en el json
                         const data = await jellyneo.itemDataByID(real_ID)
                         const embed = new EmbedBuilder()
                                     .setColor(0x0099FF)
