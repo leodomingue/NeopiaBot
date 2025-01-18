@@ -1,19 +1,21 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder , ComponentType, MessageFlags} = require('discord.js');
 const jellyneo = require(`../../api/jellyneo.js`);
+const fs = require('fs');
 
 module.exports = {
     description: "Realiza una busqueda interactiva dado un menu de imagenes",
     run: async(message) => {
 
+        const jsonDataIDNeopets = JSON.parse(fs.readFileSync('../data_neopets_ID.json', 'utf8'));
+
         let page = 0;
 
-        const images = ["https://i.imgur.com/3swK9kH.png","https://i.imgur.com/kjOgn8d.png"]
 
         const embed = new EmbedBuilder()
                 .setTitle(`Imagen ${page + 1}`)
-                .setImage(images[page])
+                .setImage(`https://neopetsimages.s3.sa-east-1.amazonaws.com/neopets_images/grid_result${page}.png`)
                 .setColor(0x00AE86)
-                .setFooter({ text: `Página ${page + 1} de ${images.length}` });
+                .setFooter({ text: `Página ${page + 1} de 6.483` });
 
         //Creamos los botones
         const button_1 = new ButtonBuilder().setCustomId('1').setLabel('1').setStyle(ButtonStyle.Secondary);
@@ -51,7 +53,7 @@ module.exports = {
         // Creamos el colector de interacciones en el mismo canal de texto donde se escribio el mensaje
         const collector = message.channel.createMessageComponentCollector({
             componentType: ComponentType.Button, //La interaccion
-            time: 90_000, //Tiempo de respuesta
+            time: 30_000, //Tiempo de respuesta
         });
 
         collector.on('collect', async (i) => { //Vemos la interrracion i
@@ -75,17 +77,19 @@ module.exports = {
                             .setTitle(`Imagen ${page + 1}`)
                             .setImage(`https://neopetsimages.s3.sa-east-1.amazonaws.com/neopets_images/grid_result${page}.png`)
                             .setColor(0x0099FF)
-                            .setFooter({ text: `Página ${page + 1} de ${images.length}` });
+                            .setFooter({ text: `Página ${page + 1} de 6.483` });
 
                         await i.update({
                             embeds: [updatedEmbed]
                         });
-
+                        collector.resetTimer();
 
                     }else{
+                        await i.deferUpdate();
                         //Si toca algun numero, vemos el ID correspondiente y llamamos a la funcion de scrapeo
                         const ID = Number(i.customId) + Number(page*9);
-                        const data = await jellyneo.itemDataByID(ID)
+                        const real_ID = Number(jsonDataIDNeopets[String(ID)])
+                        const data = await jellyneo.itemDataByID(real_ID)
                         const embed = new EmbedBuilder()
                                     .setColor(0x0099FF)
                                     .setTitle(data.title || " ")
@@ -95,11 +99,10 @@ module.exports = {
                                         { name: 'Precio', value: data.price || "No disponible", inline: true },
                                     )
                                     .setImage(data.imgSrc || " ")
-                                    .setFooter({ text: `https://items.jellyneo.net/item/${ID}/` })
+                                    .setFooter({ text: `https://items.jellyneo.net/item/${real_ID}/` })
 
                         await message.channel.send({ embeds: [embed] })
                     }
-                    await i.deferUpdate();
 
                 } else {
                     await i.reply({ content: `No deberías interactuar con estos botones ${i.user.id}. No sos ${message.author.id}`, ephemeral: true });
@@ -115,6 +118,3 @@ module.exports = {
         });
     }
 };
-
-//Falta cambiar el tema de las imagenes (Se debe crear una funcion que llame a una API donde estrán alojadas las imagenes)
-//Se debe solucionar el problema relacionado con await i.deferUpdate();
