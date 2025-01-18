@@ -13,7 +13,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
                 .setTitle(`Imagen ${page + 1}`)
-                .setImage(``)
+                .setImage(`https://sweet-genie-c11bc3.netlify.app/images/grid_result${page}.png`)
                 .setColor(0x00AE86)
                 .setFooter({ text: `Página ${page + 1} de 6.483` });
 
@@ -75,7 +75,7 @@ module.exports = {
                         //Y actualizamos la foto
                         const updatedEmbed = new EmbedBuilder()
                             .setTitle(`Imagen ${page + 1}`)
-                            .setImage(``)
+                            .setImage(`https://sweet-genie-c11bc3.netlify.app/images/grid_result${page}.png`)
                             .setColor(0x0099FF)
                             .setFooter({ text: `Página ${page + 1} de 6.483` });
 
