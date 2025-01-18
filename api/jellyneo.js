@@ -110,20 +110,7 @@ module.exports = {
                 //CODIGO ORIGINAL https://github.com/leodomingue/Scraaping-Neopets.git
                 const url = `https://items.jellyneo.net/search/`;
                 const { data } = await axios.get(url, {
-                    params: {
-                        "name": args.name,
-                        "name_type": args.name_type,
-                        "cat": args.cat,  
-                        "scat": args.scat_active,
-                        "scat_type": args.scat_type,
-                        "scat_active": args.scat_active,
-                        "min_rarity": args.min_rarity, 
-                        "max_rarity": args.max_rarity,
-                        "min_price": args.min_price, 
-                        "max_price": args.max_price,
-                        "exclude_nc": args.exclude_nc,
-                        "limit": 10,
-                      }
+                    params: args
                     }
                 );
                 const $ = cheerio.load(data);
