@@ -154,4 +154,26 @@ module.exports = {
                 return null;
             }
     },
+    PhotoDataByID: async (item) => {
+        try {
+                const url = `https://items.jellyneo.net/item/${item}/`;
+                const { data } = await axios.get(url);
+                const $ = cheerio.load(data);
+        
+                
+                const principalTargetDiv = $('div.row .large-9.small-12.columns.content-wrapper');
+                if (!principalTargetDiv) return null;
+        
+        
+                const firstSecondaryTargetDiv =  principalTargetDiv.find('div.large-3.push-2.small-12.columns');
+                const imgSrc = firstSecondaryTargetDiv.find('p.text-center img').attr('src');
+                
+        
+                return { imgSrc};
+    
+            } catch (error) {
+                console.error("Error durante el scraping:", error.message);
+                return null;
+            }
+        }
 };
