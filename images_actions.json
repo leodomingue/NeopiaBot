@@ -19,5 +19,32 @@
       "https://images.neopets.com/template_images/lenny_cartwheel.gif",
       "https://images.neopets.com/template_images/waterfun_jubjub.gif",
       "https://images.neopets.com/template_images/jubjub_rainbow_hop.gif"
+    ],
+    "greetingsVideo": [
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/406.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/1277.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/1238.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/1382.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/1282.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/1183.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/1169.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/1195.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/1213.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/1122.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/1167.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/1168.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/1165.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/1097.mp4"
+    ],
+    "goodbyeVideo": [
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/181.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/403.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/866.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/865.mp4",
+      "https://bookofages.jellyneo.net/assets/video/history/neogreetings/867.mp4"
     ]
+
+
+
+
   }
