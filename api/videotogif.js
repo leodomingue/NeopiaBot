@@ -21,6 +21,7 @@ module.exports = {
                 responseType: 'stream',
             });
 
+
             // Creamos un archivo temporal para el video
             const tempFile = tmp.fileSync({ postfix: '.mp4' });
 
@@ -30,9 +31,10 @@ module.exports = {
             // Conectamos el archivo temporal con el video descargado
             response.data.pipe(writeStream);
 
+
             // Esperamos a que se termine el videio
             await new Promise((resolve, reject) => {
-                writeStream.on('finalizado', resolve);
+                writeStream.on('finish', resolve);
                 writeStream.on('error', reject);
             });
 

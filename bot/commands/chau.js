@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { EmbedBuilder } = require('discord.js');
 const jsonImagesActionsNeopets = JSON.parse(fs.readFileSync('../images_actions.json', 'utf8'))
-
+const videotogif = require(`../../api/videotogif.js`);
 module.exports = {
     description: "El usuario se despide de todos con una imagen random",
     run: async(message) => {
